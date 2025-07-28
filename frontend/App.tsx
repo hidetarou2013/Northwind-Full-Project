@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
+import CustomersPage from './pages/CustomersPage';
+import ProductsPage from './pages/ProductsPage';
+import OrdersPage from './pages/OrdersPage';
+import { fetchNorthwindData } from './services/api';
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -9,32 +13,12 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
         console.log('Fetching data from API...');
-        const [customersResponse, productsResponse, ordersResponse] = await Promise.all([
-          fetch('/api/customers'),
-          fetch('/api/products'),
-          fetch('/api/orders')
-        ]);
-
-        console.log('API responses:', {
-          customers: customersResponse.status,
-          products: productsResponse.status,
-          orders: ordersResponse.status
-        });
-
-        if (!customersResponse.ok || !productsResponse.ok || !ordersResponse.ok) {
-          throw new Error('Failed to fetch data from API');
-        }
-
-        const customers = await customersResponse.json();
-        const products = await productsResponse.json();
-        const orders = await ordersResponse.json();
-
-        console.log('Fetched data:', { customers, products, orders });
-
-        setData({ customers, products, orders });
+        const northwindData = await fetchNorthwindData();
+        console.log('Fetched data:', northwindData);
+        setData(northwindData);
       } catch (err: any) {
         console.error('Error fetching data:', err);
         setError(err.message);
@@ -67,7 +51,7 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    fetchData();
+    loadData();
   }, []);
 
   if (loading) {
@@ -272,50 +256,6 @@ const Dashboard: React.FC = () => {
   );
 };
 
-const Customers: React.FC = () => (
-  <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Customers Management</h2>
-      <p className="text-gray-500 mb-6">Manage your customer database and relationships</p>
-      <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
-        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21v-4.325" />
-        </svg>
-        Coming Soon
-      </div>
-    </div>
-  </div>
-);
-
-const Products: React.FC = () => (
-  <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Products Management</h2>
-      <p className="text-gray-500 mb-6">Manage your product catalog and inventory</p>
-      <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg">
-        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7v10l8 4m0-14L4 7" />
-        </svg>
-        Coming Soon
-      </div>
-    </div>
-  </div>
-);
-
-const Orders: React.FC = () => (
-  <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Orders Management</h2>
-      <p className="text-gray-500 mb-6">Track and manage customer orders</p>
-      <div className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-lg">
-        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-        </svg>
-        Coming Soon
-      </div>
-    </div>
-  </div>
-);
 
 const App: React.FC = () => {
   const [pageTitle, setPageTitle] = useState('Dashboard');
@@ -339,9 +279,9 @@ const App: React.FC = () => {
         <main className="flex-1 overflow-x-hidden overflow-y-auto">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/orders" element={<Orders />} />
+            <Route path="/customers" element={<CustomersPage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
           </Routes>
         </main>
       </div>

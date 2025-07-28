@@ -1,15 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Order } from '../types';
 import DataTable from '../components/DataTable';
 import FormModal, { FormField } from '../components/modals/FormModal';
 import ConfirmDialog from '../components/modals/ConfirmDialog';
-
-interface OrdersPageProps {
-  orders: Order[];
-  onAdd: (order: Omit<Order, 'id'>) => void;
-  onUpdate: (order: Order) => void;
-  onDelete: (id: string | number) => void;
-}
+import { createOrder, updateOrder, patchOrder, deleteOrder, orderService } from '../services/api';
 
 const emptyOrder: Omit<Order, 'id'> = {
     customerId: '',
@@ -33,10 +27,24 @@ const formFields: FormField<Order>[] = [
     { name: 'shipCountry', label: 'Ship Country', type: 'text' },
 ];
 
-const OrdersPage: React.FC<OrdersPageProps> = ({ orders, onAdd, onUpdate, onDelete }) => {
+const OrdersPage: React.FC = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Partial<Order> | null>(null);
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        const data = await orderService.getAll();
+        setOrders(data);
+      } catch (error) {
+        console.error('Failed to load orders:', error);
+      }
+    };
+
+    loadOrders();
+  }, []);
 
   const handleAdd = useCallback(() => {
     setSelectedOrder(emptyOrder);
@@ -60,21 +68,32 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ orders, onAdd, onUpdate, onDele
     setIsConfirmOpen(true);
   }, []);
 
-  const handleSave = useCallback((order: Order) => {
-    if (order.id) {
-        onUpdate(order);
-    } else {
-        onAdd(order);
+  const handleSave = useCallback(async (order: Order) => {
+    try {
+      if (order.id) {
+        const updatedOrder = await updateOrder(order);
+        setOrders(prev => prev.map(o => o.id === updatedOrder.id ? updatedOrder : o));
+      } else {
+        const newOrder = await createOrder(order);
+        setOrders(prev => [...prev, newOrder]);
+      }
+      closeModals();
+    } catch (error) {
+      console.error('Error saving order:', error);
     }
-    closeModals();
-  }, [onUpdate, onAdd]);
+  }, []);
 
-  const handleConfirmDelete = useCallback(() => {
+  const handleConfirmDelete = useCallback(async () => {
     if (selectedOrder?.id) {
-      onDelete(selectedOrder.id);
+      try {
+        await deleteOrder(selectedOrder.id);
+        setOrders(prev => prev.filter(o => o.id !== selectedOrder.id));
+      } catch (error) {
+        console.error('Error deleting order:', error);
+      }
     }
     closeModals();
-  }, [selectedOrder, onDelete]);
+  }, [selectedOrder]);
 
   const closeModals = useCallback(() => {
     setIsFormOpen(false);
