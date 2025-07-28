@@ -1,7 +1,7 @@
 import { Customer, Product, Order } from '../types';
 
 // API base URL
-const API_BASE_URL = 'http://localhost:8080/Northwind4/api';
+const API_BASE_URL = '/api';
 
 // Simulate API fetch. In a real app, this would be removed and API calls
 // would be made from the components or a dedicated API service layer.

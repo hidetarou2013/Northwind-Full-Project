@@ -8,6 +8,15 @@ export default defineConfig({
     'process.env.API_KEY': JSON.stringify(process.env.VITE_API_KEY)
   },
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/Northwind4',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
