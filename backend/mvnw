@@ -1,0 +1,299 @@
+#!/bin/sh
+#
+# Copyright 2012-2022 The Apache Software Foundation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# -----------------------------------------------------------------------------
+# Maven Wrapper script
+#
+# Environment Variable Prequisites
+#
+#   MAVEN_OPTS       (Optional) Java runtime options used when running Maven.
+#   MAVEN_SKIP_RC    (Optional) Flag to disable loading of .mavenrc files.
+#   MVNW_VERBOSE     (Optional) Flag to show progress of wrapper script.
+#
+# -----------------------------------------------------------------------------
+
+MAVEN_WRAPPER_VERSION="3.2.0"
+
+MAVEN_WRAPPER_JAR_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/\${MAVEN_WRAPPER_VERSION}/maven-wrapper-\${MAVEN_WRAPPER_VERSION}.jar"
+
+MAVEN_WRAPPER_PROPERTIES_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/\${MAVEN_WRAPPER_VERSION}/maven-wrapper-\${MAVEN_WRAPPER_VERSION}.properties"
+
+# The unique id of this wrapper, used to resolve conflicting distribution URLs.
+WRAPPER_ID="spring-boot"
+
+if [ -n "\$MVNW_VERBOSE" ]; then
+  echo "mvnw script for Spring Boot..."
+fi
+
+# The default directory to store the downloaded maven-wrapper.jar
+MAVEN_WRAPPER_JAR_DIR="\${MAVEN_USER_HOME:-\$HOME}/.m2/wrapper/dists"
+
+# The distribution properties file is relative to the script location.
+MAVEN_WRAPPER_PROPERTIES_FILE="\$(dirname "\$0")/.mvn/wrapper/maven-wrapper.properties"
+
+# The distribution wrapper jar file is relative to the script location.
+MAVEN_WRAPPER_JAR_FILE="\$(dirname "\$0")/.mvn/wrapper/maven-wrapper.jar"
+
+# The location of the script
+SCRIPT_DIR="\$(cd -P -- "\$(dirname -- "\$0")" && pwd -P)"
+
+# The directory to which the distribution will be downloaded and unpacked.
+DISTRIBUTION_DIR="\$MAVEN_WRAPPER_JAR_DIR"
+
+is_cygwin() {
+  case "\$(uname)" in
+  CYGWIN*)
+    cygwin=true
+    ;;
+  *)
+    cygwin=false
+    ;;
+  esac
+}
+
+is_darwin() {
+  case "\$(uname)" in
+  Darwin*)
+    darwin=true
+    ;;
+  *)
+    darwin=false
+    ;;
+  esac
+}
+
+is_msys() {
+  case "\$(uname)" in
+  MINGW*)
+    msys=true
+    ;;
+  *)
+    msys=false
+    ;;
+  esac
+}
+
+is_solaris() {
+  case "\$(uname)" in
+  SunOS*)
+    solaris=true
+    ;;
+  *)
+    solaris=false
+    ;;
+  esac
+}
+
+get_full_path() {
+  if \$darwin; then
+    _FULL_PATH=\$(
+      cd -P -- "\$(dirname -- "\$1")" &&
+        pwd -P
+    )
+    _FULL_PATH="\${_FULL_PATH}/\$(basename -- "\$1")"
+  else
+    _FULL_PATH=\$(readlink -f "\$1")
+  fi
+  echo "\$_FULL_PATH"
+}
+
+calculate_distribution_url_checksum() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    echo "distributionUrl=\$1" | sha256sum | awk '{print \$1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    echo "distributionUrl=\$1" | shasum -a 256 | awk '{print \$1}'
+  else
+    echo "distributionUrl=\$1" >&2
+    echo "Error: sha256sum or shasum not found in path." >&2
+    return 1
+  fi
+}
+
+error() {
+  echo -e "Error: \$1" >&2
+  exit 1
+}
+
+verbose() {
+  if [ -n "\$MVNW_VERBOSE" ]; then
+    echo "\$1"
+  fi
+}
+
+download() {
+  if command -v curl >/dev/null 2>&1; then
+    curl -sSfL "\$1" -o "\$2"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -q -O "\$2" "\$1"
+  else
+    error "Either curl or wget is required."
+  fi
+}
+
+download_if_missing() {
+  if [ -f "\$2" ]; then
+    verbose "Found existing file \$2"
+  else
+    verbose "Downloading \$1"
+    download "\$1" "\$2"
+  fi
+}
+
+convert_path() {
+  if \$is_cygwin || \$is_msys; then
+    cygpath -w "\$1"
+  else
+    echo "\$1"
+  fi
+}
+
+# The default MAVEN_HOME, can be overwritten by environment variable.
+MAVEN_HOME="\${MAVEN_HOME:-}"
+
+is_cygwin
+is_darwin
+is_msys
+is_solaris
+
+if [ ! -f "\$MAVEN_WRAPPER_PROPERTIES_FILE" ]; then
+  verbose "No maven-wrapper.properties, downloading it from \$MAVEN_WRAPPER_PROPERTIES_URL."
+  # Create the directory ".mvn/wrapper"
+  if [ ! -d "\$(dirname "\$MAVEN_WRAPPER_PROPERTIES_FILE")" ]; then
+    mkdir -p "\$(dirname "\$MAVEN_WRAPPER_PROPERTIES_FILE")"
+  fi
+  # Download the maven-wrapper.properties file
+  download "\$MAVEN_WRAPPER_PROPERTIES_URL" "\$MAVEN_WRAPPER_PROPERTIES_FILE"
+fi
+
+# shellcheck source=/dev/null
+. "\$MAVEN_WRAPPER_PROPERTIES_FILE"
+
+# The URL of the Maven distribution
+if [ -z "\$distributionUrl" ]; then
+  error "distributionUrl was not found in '\$MAVEN_WRAPPER_PROPERTIES_FILE'."
+fi
+
+# If the MAVEN_WRAPPER_JAR_FILE doesn't exist, download it.
+if [ ! -f "\$MAVEN_WRAPPER_JAR_FILE" ]; then
+  verbose "No maven-wrapper.jar, downloading from \$MAVEN_WRAPPER_JAR_URL"
+  download_if_missing "\$MAVEN_WRAPPER_JAR_URL" "\$MAVEN_WRAPPER_JAR_FILE"
+fi
+
+if [ -z "\$wrapperId" ]; then
+  wrapperId="\$WRAPPER_ID"
+fi
+
+# The distributionSha256Sum of the maven-wrapper.jar
+if [ -z "\$distributionSha256Sum" ]; then
+  verbose "distributionSha256Sum was not found in '\$MAVEN_WRAPPER_PROPERTIES_FILE', calculating it from '\$distributionUrl'"
+  distributionSha256Sum=\$(calculate_distribution_url_checksum "\$distributionUrl")
+  if [ \$? -ne 0 ]; then
+    exit 1
+  fi
+fi
+
+if [ -z "\$distributionSha256Sum" ]; then
+  error "Could not calculate distributionSha256Sum"
+fi
+
+# The directory where the distribution will be installed.
+distributionDirName=\$(echo "\$distributionUrl" | sed 's/[\\/:.]/_/g')
+distributionPath="\$wrapperId/\$distributionDirName/\$distributionSha256Sum"
+if [ -n "\$DISTRIBUTION_DIR" ]; then
+  INSTALL_DIR="\$DISTRIBUTION_DIR/\$distributionPath"
+else
+  INSTALL_DIR="\$SCRIPT_DIR/\$distributionPath"
+fi
+
+# Create the installation directory
+if [ ! -d "\$INSTALL_DIR" ]; then
+  verbose "Creating installation directory: \$INSTALL_DIR"
+  mkdir -p "\$INSTALL_DIR"
+fi
+
+# The name of the distribution, used to name the downloaded file.
+distributionFileName=\$(basename "\$distributionUrl")
+distributionFile="\$INSTALL_DIR/\$distributionFileName"
+
+# Download the distribution if it's not already downloaded.
+download_if_missing "\$distributionUrl" "\$distributionFile"
+
+# Verify the downloaded distribution
+if command -v sha256sum >/dev/null 2>&1; then
+  if ! echo "\$distributionSha256Sum *\$distributionFile" | sha256sum -c - >/dev/null 2>&1; then
+    error "Verification of \$distributionFile failed. Distribution sha256sum is \$distributionSha256Sum"
+  fi
+elif command -v shasum >/dev/null 2>&1; then
+  if ! echo "\$distributionSha256Sum  \$distributionFile" | shasum -a 256 -c - >/dev/null 2>&1; then
+    error "Verification of \$distributionFile failed. Distribution sha256sum is \$distributionSha256Sum"
+  fi
+else
+  echo "Error: sha256sum or shasum not found in path." >&2
+fi
+
+# Find the name of the directory created by unzipping the distribution.
+unzipDir=\$(
+  "\$JAVA_HOME/bin/jar" tf "\$distributionFile" |
+    head -n 1 |
+    sed 's|/.*||'
+)
+
+# Unpack the distribution
+if [ -d "\$INSTALL_DIR/\$unzipDir" ]; then
+  verbose "Distribution is already unpacked"
+else
+  verbose "Unpacking \$distributionFile to \$INSTALL_DIR"
+  "\$JAVA_HOME/bin/jar" xf "\$distributionFile" -C "\$INSTALL_DIR"
+fi
+
+# Set the MAVEN_HOME environment variable to the unpacked distribution.
+MAVEN_HOME="\$INSTALL_DIR/\$unzipDir"
+
+MAVEN_CMD_LINE_ARGS=("\$@")
+
+# If the MAVEN_SKIP_RC environment variable is not set, then look for a ".mavenrc" file.
+if [ -z "\$MAVEN_SKIP_RC" ]; then
+  # If there is a ".mavenrc" file in the current directory, then add its contents to the command line arguments.
+  if [ -f .mavenrc ]; then
+    verbose "Found .mavenrc, reading arguments from it"
+    # shellcheck source=/dev/null
+    . .mavenrc
+    MAVEN_CMD_LINE_ARGS+=("\${MAVEN_OPTS[@]}")
+  fi
+fi
+
+export MAVEN_HOME
+if \$is_cygwin; then
+  MAVEN_HOME=\$(cygpath -u "\$MAVEN_HOME")
+fi
+
+# The MAVEN_PROJECTBASEDIR is the directory of the first pom.xml file found in the current directory or any of its parent directories.
+MAVEN_PROJECTBASEDIR="\$PWD"
+while [ ! -f "\$MAVEN_PROJECTBASEDIR/pom.xml" ] && [ "\$MAVEN_PROJECTBASEDIR" != "/" ]; do
+  MAVEN_PROJECTBASEDIR=\$(dirname "\$MAVEN_PROJECTBASEDIR")
+done
+
+if [ -f "\$MAVEN_PROJECTBASEDIR/pom.xml" ]; then
+  # The wrapper has successfully determined the base directory.
+  # The MAVEN_PROJECTBASEDIR environment variable is set to avoid that other projects using the wrapper
+  # accidentally inherit the base directory of the current project.
+  export MAVEN_PROJECTBASEDIR
+fi
+
+# shellcheck disable=SC2068
+# Disabling because we want to expand the array to individual arguments
+exec "\$MAVEN_HOME/bin/mvn" \${MAVEN_CMD_LINE_ARGS[@]}

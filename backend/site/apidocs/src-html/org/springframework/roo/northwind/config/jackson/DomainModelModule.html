@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+<title>ソース・コード</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package org.springframework.roo.northwind.config.jackson;<a name="line.1"></a>
+<span class="sourceLineNo">002</span>import org.springframework.roo.addon.web.mvc.controller.annotations.config.RooDomainModelModule;<a name="line.2"></a>
+<span class="sourceLineNo">003</span>import com.fasterxml.jackson.databind.module.SimpleModule;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import org.springframework.boot.jackson.JsonComponent;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import org.springframework.roo.northwind.domain.Category;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import org.springframework.roo.northwind.domain.City;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import org.springframework.roo.northwind.domain.Country;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import org.springframework.roo.northwind.domain.Customer;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import org.springframework.roo.northwind.domain.CustomerOrder;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.springframework.roo.northwind.domain.Employee;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import org.springframework.roo.northwind.domain.OrderDetail;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.springframework.roo.northwind.domain.Party;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.springframework.roo.northwind.domain.Product;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.springframework.roo.northwind.domain.PurchaseOrder;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import org.springframework.roo.northwind.domain.Region;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import org.springframework.roo.northwind.domain.Report;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import org.springframework.roo.northwind.domain.Shipper;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import org.springframework.roo.northwind.domain.SoldProduct;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import org.springframework.roo.northwind.domain.Store;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import org.springframework.roo.northwind.domain.Supplier;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.springframework.roo.northwind.web.CategoryJsonMixin;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.springframework.roo.northwind.web.CityJsonMixin;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.springframework.roo.northwind.web.CountryJsonMixin;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.springframework.roo.northwind.web.CustomerJsonMixin;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.springframework.roo.northwind.web.CustomerOrderJsonMixin;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.springframework.roo.northwind.web.EmployeeJsonMixin;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.springframework.roo.northwind.web.OrderDetailJsonMixin;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.springframework.roo.northwind.web.PartyJsonMixin;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.springframework.roo.northwind.web.ProductJsonMixin;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.springframework.roo.northwind.web.PurchaseOrderJsonMixin;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.springframework.roo.northwind.web.RegionJsonMixin;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.springframework.roo.northwind.web.ReportJsonMixin;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.springframework.roo.northwind.web.ShipperJsonMixin;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.springframework.roo.northwind.web.SoldProductJsonMixin;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.springframework.roo.northwind.web.StoreJsonMixin;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.springframework.roo.northwind.web.SupplierJsonMixin;<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>/**<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * = DomainModelModule<a name="line.39"></a>
+<span class="sourceLineNo">040</span> TODO Auto-generated class documentation<a name="line.40"></a>
+<span class="sourceLineNo">041</span> *<a name="line.41"></a>
+<span class="sourceLineNo">042</span> */<a name="line.42"></a>
+<span class="sourceLineNo">043</span>@RooDomainModelModule<a name="line.43"></a>
+<span class="sourceLineNo">044</span>@JsonComponent<a name="line.44"></a>
+<span class="sourceLineNo">045</span>public class DomainModelModule extends SimpleModule {<a name="line.45"></a>
+<span class="sourceLineNo">046</span><a name="line.46"></a>
+<span class="sourceLineNo">047</span>    /**<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * TODO Auto-generated constructor documentation<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     *<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     */<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    public DomainModelModule() {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        // Mixin registration<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        setMixInAnnotation(Category.class, CategoryJsonMixin.class);<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        setMixInAnnotation(City.class, CityJsonMixin.class);<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        setMixInAnnotation(Country.class, CountryJsonMixin.class);<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        setMixInAnnotation(Customer.class, CustomerJsonMixin.class);<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        setMixInAnnotation(CustomerOrder.class, CustomerOrderJsonMixin.class);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        setMixInAnnotation(Employee.class, EmployeeJsonMixin.class);<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        setMixInAnnotation(OrderDetail.class, OrderDetailJsonMixin.class);<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        setMixInAnnotation(Party.class, PartyJsonMixin.class);<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        setMixInAnnotation(Product.class, ProductJsonMixin.class);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        setMixInAnnotation(PurchaseOrder.class, PurchaseOrderJsonMixin.class);<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        setMixInAnnotation(Region.class, RegionJsonMixin.class);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        setMixInAnnotation(Report.class, ReportJsonMixin.class);<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        setMixInAnnotation(Shipper.class, ShipperJsonMixin.class);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        setMixInAnnotation(SoldProduct.class, SoldProductJsonMixin.class);<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        setMixInAnnotation(Store.class, StoreJsonMixin.class);<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        setMixInAnnotation(Supplier.class, SupplierJsonMixin.class);<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    }<a name="line.69"></a>
+<span class="sourceLineNo">070</span>}<a name="line.70"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

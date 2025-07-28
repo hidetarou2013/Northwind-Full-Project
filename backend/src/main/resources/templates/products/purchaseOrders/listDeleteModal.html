@@ -1,0 +1,24 @@
+<!--TABLE-->
+<div class="table-responsive" id="containerFields" data-th-fragment="purchaseorders-detailModalConfirmBody" data-th-with="collectionLink=${@linkBuilder.of('ProductsItemPurchaseOrdersThymeleafController')}">
+    <table id="purchaseorders-detail-table-item-to-remove" data-parent-table="product-entity-table" data-data-parent-id="${product != null ? product.id : ''}" data-data-load-url="${collectionLink.to('datatablesByIdsIn').with('product', '_PARENTID_')}">
+      <thead>
+        <tr>
+              <th data-data="employee" data-th-text="#{label_product_purchaseorders_employee}">employee</th>
+              <th data-data="product" data-th-text="#{label_product_purchaseorders_product}">product</th>
+              <th data-data="unitCost" data-th-text="#{label_product_purchaseorders_unitcost}">unitCost</th>
+              <th data-data="quantity" data-th-text="#{label_product_purchaseorders_quantity}">quantity</th>
+              <th data-data="orderDate" data-th-text="#{label_product_purchaseorders_orderdate}">orderDate</th>
+        </tr>
+      </thead>
+      <tbody data-th-remove="all">
+        <tr>
+              <td>employee</td>
+              <td>product</td>
+              <td>unitCost</td>
+              <td>quantity</td>
+              <td>orderDate</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+<!-- /TABLE -->

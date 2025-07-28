@@ -1,0 +1,88 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Frontend (React/Vite/Node.js) specific
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/lerna-debug.log*
+frontend/.eslintcache
+frontend/.stylelintcache
+frontend/coverage/
+frontend/*.tsbuildinfo
+frontend/.nyc_output/
+frontend/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Backend (Java/Spring Boot/Maven/Gradle) specific
+backend/target/
+backend/build/
+backend/out/
+backend/bin/
+backend/.gradle/
+backend/.mvn/
+backend/.settings/
+backend/.project
+backend/.classpath
+backend/.factorypath
+backend/.apt_generated
+backend/.springBeans
+backend/.sts4-cache
+backend/HELP.md
+backend/*.iml
+backend/*.ipr
+backend/*.iws
+backend/log.roo
+backend/.roo/
+backend/tmp/
+
+# Database files (if any)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar

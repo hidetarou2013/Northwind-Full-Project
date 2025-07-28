@@ -1,0 +1,18 @@
+<!--TABLE-->
+<div class="table-responsive" id="containerFields" data-th-fragment="shipper-entityModalConfirmBody" data-th-with="collectionLink=${@linkBuilder.of('ShippersCollectionThymeleafController')},itemLink=${@linkBuilder.of('ShippersItemThymeleafController')}">
+    <table id="shipper-entity-table-item-to-remove" data-data-load-url="${collectionLink.to('datatablesByIdsIn')}">
+      <thead>
+        <tr>
+          <th data-data="companyName" data-th-text="#{label_shipper_companyname}">companyName</th>
+          <th data-data="phone" data-th-text="#{label_shipper_phone}">phone</th>
+        </tr>
+      </thead>
+      <tbody data-th-remove="all">
+        <tr>
+          <td>companyName</td>
+          <td>phone</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+<!-- /TABLE -->

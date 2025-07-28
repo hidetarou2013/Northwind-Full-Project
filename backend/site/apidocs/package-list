@@ -1,0 +1,10 @@
+org.springframework.roo.northwind
+org.springframework.roo.northwind.config
+org.springframework.roo.northwind.config.jackson
+org.springframework.roo.northwind.domain
+org.springframework.roo.northwind.repository
+org.springframework.roo.northwind.service.api
+org.springframework.roo.northwind.service.impl
+org.springframework.roo.northwind.web
+org.springframework.roo.northwind.web.advices
+org.springframework.roo.northwind.web.reports
