@@ -1,15 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Product } from '../types';
 import DataTable from '../components/DataTable';
 import FormModal, { FormField } from '../components/modals/FormModal';
 import ConfirmDialog from '../components/modals/ConfirmDialog';
-
-interface ProductsPageProps {
-  products: Product[];
-  onAdd: (product: Omit<Product, 'id'>) => void;
-  onUpdate: (product: Product) => void;
-  onDelete: (id: string | number) => void;
-}
+import { createProduct, updateProduct, patchProduct, deleteProduct, productService } from '../services/api';
 
 const emptyProduct: Omit<Product, 'id'> = {
     name: '',
@@ -27,10 +21,24 @@ const formFields: FormField<Product>[] = [
     { name: 'unitsInStock', label: 'Units In Stock', type: 'number', required: true },
 ];
 
-const ProductsPage: React.FC<ProductsPageProps> = ({ products, onAdd, onUpdate, onDelete }) => {
+const ProductsPage: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Partial<Product> | null>(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await productService.getAll();
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   const handleAdd = useCallback(() => {
     setSelectedProduct(emptyProduct);
@@ -47,21 +55,32 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products, onAdd, onUpdate, 
     setIsConfirmOpen(true);
   }, []);
 
-  const handleSave = useCallback((product: Product) => {
-    if (product.id) {
-        onUpdate(product);
-    } else {
-        onAdd(product);
+  const handleSave = useCallback(async (product: Product) => {
+    try {
+      if (product.id) {
+        const updatedProduct = await updateProduct(product);
+        setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+      } else {
+        const newProduct = await createProduct(product);
+        setProducts(prev => [...prev, newProduct]);
+      }
+      closeModals();
+    } catch (error) {
+      console.error('Error saving product:', error);
     }
-    closeModals();
-  }, [onUpdate, onAdd]);
+  }, []);
 
-  const handleConfirmDelete = useCallback(() => {
+  const handleConfirmDelete = useCallback(async () => {
     if (selectedProduct?.id) {
-      onDelete(selectedProduct.id);
+      try {
+        await deleteProduct(selectedProduct.id);
+        setProducts(prev => prev.filter(p => p.id !== selectedProduct.id));
+      } catch (error) {
+        console.error('Error deleting product:', error);
+      }
     }
     closeModals();
-  }, [selectedProduct, onDelete]);
+  }, [selectedProduct]);
 
   const closeModals = useCallback(() => {
     setIsFormOpen(false);

@@ -1,15 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Customer } from '../types';
 import DataTable from '../components/DataTable';
 import FormModal, { FormField } from '../components/modals/FormModal';
 import ConfirmDialog from '../components/modals/ConfirmDialog';
-
-interface CustomersPageProps {
-  customers: Customer[];
-  onAdd: (customer: Omit<Customer, 'id'>) => void;
-  onUpdate: (customer: Customer) => void;
-  onDelete: (id: string | number) => void;
-}
+import { createCustomer, updateCustomer, patchCustomer, deleteCustomer, customerService } from '../services/api';
 
 const emptyCustomer: Omit<Customer, 'id'> = {
     companyName: '',
@@ -27,10 +21,24 @@ const formFields: FormField<Customer>[] = [
     { name: 'country', label: 'Country', type: 'text' },
 ];
 
-const CustomersPage: React.FC<CustomersPageProps> = ({ customers, onAdd, onUpdate, onDelete }) => {
+const CustomersPage: React.FC = () => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Partial<Customer> | null>(null);
+
+  useEffect(() => {
+    const loadCustomers = async () => {
+      try {
+        const data = await customerService.getAll();
+        setCustomers(data);
+      } catch (error) {
+        console.error('Failed to load customers:', error);
+      }
+    };
+
+    loadCustomers();
+  }, []);
 
   const handleAdd = useCallback(() => {
     setSelectedCustomer(emptyCustomer);
@@ -47,21 +55,32 @@ const CustomersPage: React.FC<CustomersPageProps> = ({ customers, onAdd, onUpdat
     setIsConfirmOpen(true);
   }, []);
 
-  const handleSave = useCallback((customer: Customer) => {
-    if (customer.id) {
-        onUpdate(customer);
-    } else {
-        onAdd(customer);
+  const handleSave = useCallback(async (customer: Customer) => {
+    try {
+      if (customer.id) {
+        const updatedCustomer = await updateCustomer(customer);
+        setCustomers(prev => prev.map(c => c.id === updatedCustomer.id ? updatedCustomer : c));
+      } else {
+        const newCustomer = await createCustomer(customer);
+        setCustomers(prev => [...prev, newCustomer]);
+      }
+      closeModals();
+    } catch (error) {
+      console.error('Error saving customer:', error);
     }
-    closeModals();
-  }, [onUpdate, onAdd]);
+  }, []);
 
-  const handleConfirmDelete = useCallback(() => {
+  const handleConfirmDelete = useCallback(async () => {
     if (selectedCustomer?.id) {
-      onDelete(selectedCustomer.id);
+      try {
+        await deleteCustomer(selectedCustomer.id);
+        setCustomers(prev => prev.filter(c => c.id !== selectedCustomer.id));
+      } catch (error) {
+        console.error('Error deleting customer:', error);
+      }
     }
     closeModals();
-  }, [selectedCustomer, onDelete]);
+  }, [selectedCustomer]);
 
   const closeModals = useCallback(() => {
     setIsFormOpen(false);

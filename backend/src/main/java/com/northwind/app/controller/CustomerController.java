@@ -48,6 +48,31 @@ public class CustomerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Customer> patchCustomer(@PathVariable String id, @RequestBody Customer customerDetails) {
+        return repository.findById(id)
+                .map(customer -> {
+                    // Only update fields that are not null in the request
+                    if (customerDetails.getCompanyName() != null) {
+                        customer.setCompanyName(customerDetails.getCompanyName());
+                    }
+                    if (customerDetails.getContactName() != null) {
+                        customer.setContactName(customerDetails.getContactName());
+                    }
+                    if (customerDetails.getContactTitle() != null) {
+                        customer.setContactTitle(customerDetails.getContactTitle());
+                    }
+                    if (customerDetails.getCity() != null) {
+                        customer.setCity(customerDetails.getCity());
+                    }
+                    if (customerDetails.getCountry() != null) {
+                        customer.setCountry(customerDetails.getCountry());
+                    }
+                    return ResponseEntity.ok(repository.save(customer));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String id) {
         return repository.findById(id)
