@@ -27,6 +27,20 @@ const CustomersPage: React.FC = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Partial<Customer> | null>(null);
 
+  const generateUniqueCustomerId = (companyName: string) => {
+    const baseId = (companyName || 'CUST').substring(0, 4).toUpperCase().replace(/[^A-Z]/g, '').padEnd(4, 'X');
+    let counter = 1;
+    let newId = baseId + counter.toString().padStart(2, '0');
+    
+    // Check if ID already exists and increment if needed
+    while (customers.some(c => c.id === newId)) {
+      counter++;
+      newId = baseId + counter.toString().padStart(2, '0');
+    }
+    
+    return newId;
+  };
+
   useEffect(() => {
     const loadCustomers = async () => {
       try {
@@ -57,16 +71,28 @@ const CustomersPage: React.FC = () => {
 
   const handleSave = useCallback(async (customer: Customer) => {
     try {
+      console.log('Saving customer:', customer);
       if (customer.id) {
+        console.log('Updating existing customer with ID:', customer.id);
         const updatedCustomer = await updateCustomer(customer);
         setCustomers(prev => prev.map(c => c.id === updatedCustomer.id ? updatedCustomer : c));
       } else {
-        const newCustomer = await createCustomer(customer);
+        console.log('Creating new customer');
+        // For new customers, we need to generate a unique ID based on company name
+        const newId = generateUniqueCustomerId(customer.companyName || 'CUST');
+        const customerToCreate = {
+          ...customer,
+          id: newId
+        };
+        console.log('Customer data to create:', customerToCreate);
+        const newCustomer = await createCustomer(customerToCreate);
+        console.log('Created customer:', newCustomer);
         setCustomers(prev => [...prev, newCustomer]);
       }
       closeModals();
     } catch (error) {
       console.error('Error saving customer:', error);
+      alert('Error saving customer: ' + error.message);
     }
   }, []);
 

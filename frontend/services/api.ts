@@ -104,8 +104,10 @@ export const fetchNorthwindData = async () => {
 };
 
 // Customer-specific functions
-export const createCustomer = (customer: Omit<Customer, 'id'>) => 
-  customerService.create(customer);
+export const createCustomer = (customer: Omit<Customer, 'id'> | Customer) => {
+  // If customer has an ID, send it; otherwise, let the backend generate one
+  return customerService.create(customer);
+};
 
 export const updateCustomer = (customer: Customer) => 
   customerService.update(customer.id, customer);
